@@ -64,12 +64,12 @@
     '<div class="cfm-top">'+
       '<span class="cfm-badge">100% gratis · Datos oficiales de la Dirección del Trabajo</span>'+
       '<h1>¿Tu condominio tiene multas de la Dirección del Trabajo?</h1>'+
-      '<p class="cfm-lead">Busca por nombre o RUT entre más de <strong>10.000 multas registradas de 3.800 comunidades chilenas</strong> y revisa el detalle de cada una en segundos.</p>'+
+      '<p class="cfm-lead">Ingresa el <strong>RUT de tu comunidad</strong> y revísalo entre más de <strong>10.000 multas registradas de 3.800 comunidades chilenas</strong>, con el detalle de cada una.</p>'+
     '</div>'+
     '<div class="cfm-form">'+
       '<div class="cfm-card">'+
         '<h3>Accede gratis al buscador</h3>'+
-        '<p class="cfm-sub">Completa tus datos y revisa al instante las multas de tu comunidad. ¿No sabes el RUT? No importa: también puedes buscar por nombre.</p>'+
+        '<p class="cfm-sub">Completa tus datos, incluido el <strong>RUT de tu comunidad</strong>, y revisa al instante sus multas.</p>'+
         '<div id="hs-multas-form"><div class="cfm-loading">Cargando formulario…</div></div>'+
         '<p class="cfm-note">Tus datos están seguros: cero spam y puedes darte de baja cuando quieras.</p>'+
       '</div>'+
@@ -88,8 +88,8 @@
   '<div class="cfm-steps-wrap">'+
     '<h2>¿Cómo funciona?</h2>'+
     '<div class="cfm-steps-grid">'+
-      '<div class="cfm-step"><div class="num">1</div><h4>Deja tus datos</h4><p>Completa el formulario con tu nombre, correo y, si lo tienes, el RUT de tu comunidad.</p></div>'+
-      '<div class="cfm-step"><div class="num">2</div><h4>Busca tu comunidad</h4><p>Entras directo al buscador; si dejaste el RUT, tu comunidad aparece al tiro.</p></div>'+
+      '<div class="cfm-step"><div class="num">1</div><h4>Deja tus datos</h4><p>Completa el formulario con tu nombre, correo y el RUT de tu comunidad.</p></div>'+
+      '<div class="cfm-step"><div class="num">2</div><h4>Vemos tu comunidad</h4><p>Entras directo al resultado, con tu comunidad ya cargada por su RUT.</p></div>'+
       '<div class="cfm-step"><div class="num">3</div><h4>Revisa cada multa</h4><p>Monto, fecha, estado de pago y el motivo de cada infracción laboral.</p></div>'+
     '</div>'+
   '</div>';

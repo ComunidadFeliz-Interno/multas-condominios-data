@@ -144,11 +144,11 @@
       .catch(function(e){loading=false;out.innerHTML='<div class="cfm-empty"><b>No pudimos cargar la información.</b><br>Intenta nuevamente en unos segundos.</div>';console.error('cf-multas:',e);});
     }
     function search(q){
-      var nq=norm(q), rq=normRut(q), terms=nq.split(' ').filter(Boolean), res=[];
-      for(var i=0;i<INDEX.length;i++){var e=INDEX[i],ok=false;
-        if(rq.length>=4 && e.sr.indexOf(rq)!==-1) ok=true;
-        if(!ok && terms.length){ok=terms.every(function(t){return e.sn.indexOf(t)!==-1;});}
-        if(ok)res.push(e.it);
+      // Solo por RUT (la comunidad llega por su RUT desde el formulario)
+      var rq=normRut(q), res=[];
+      if(rq.length<4) return res;
+      for(var i=0;i<INDEX.length;i++){var e=INDEX[i];
+        if(e.sr.indexOf(rq)!==-1) res.push(e.it);
       }
       res.sort(function(a,b){return b.n-a.n;});return res;
     }
@@ -158,12 +158,11 @@
     function paint(){
       var res=lastResults;
       if(!res.length){
-        var q=QUERY;
-        var esRut = normRut(q).length>=7 && /[0-9]/.test(q); // busqueda tipo RUT: si es exacta y no hay match, si es buena noticia
-        if(esRut){
-          out.innerHTML='<div class="cfm-empty"><b>Sin multas registradas para este RUT</b> en esta base. <b style="color:#127a3e">Buena noticia para tu comunidad.</b><br><br>Si quieres, verifica también por nombre, por si la razón social es distinta.</div>';
+        var validRut = normRut(QUERY).length>=7;
+        if(validRut){
+          out.innerHTML='<div class="cfm-empty"><b>Sin multas registradas para este RUT</b> en esta base. <b style="color:#127a3e">Buena noticia para tu comunidad.</b></div>';
         }else{
-          out.innerHTML='<div class="cfm-empty"><b>No encontramos resultados</b> para “'+esc(q)+'”.<br>Prueba con otra palabra del nombre, o busca por RUT: es la forma más precisa de confirmar.</div>';
+          out.innerHTML='<div class="cfm-empty"><b>Ese RUT no parece válido.</b><br>Vuelve al buscador e ingresa el RUT de tu comunidad (con o sin puntos y guion).<br><br><a class="cfm-btn" href="'+BACK_URL+'">Ir al buscador</a></div>';
         }
         return;
       }
@@ -203,7 +202,7 @@
       out.innerHTML='<div class="cfm-status">Cargando…</div>';
       render();
     }else{
-      out.innerHTML='<div class="cfm-empty"><b>¿Qué comunidad quieres revisar?</b><br>Vuelve al buscador e ingresa el nombre o RUT de tu comunidad.<br><br><a class="cfm-btn" href="'+BACK_URL+'">Ir al buscador</a></div>';
+      out.innerHTML='<div class="cfm-empty"><b>¿Qué comunidad quieres revisar?</b><br>Vuelve al buscador e ingresa el RUT de tu comunidad.<br><br><a class="cfm-btn" href="'+BACK_URL+'">Ir al buscador</a></div>';
     }
   }
 
