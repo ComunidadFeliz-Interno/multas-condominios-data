@@ -64,14 +64,14 @@
     '<div class="cfm-top">'+
       '<span class="cfm-badge">100% gratis · Datos oficiales de la Dirección del Trabajo</span>'+
       '<h1>¿Tu condominio tiene multas de la Dirección del Trabajo?</h1>'+
-      '<p class="cfm-lead">Revísalo en segundos: busca por nombre o RUT y conoce el detalle de cada multa laboral registrada a nombre de tu comunidad.</p>'+
+      '<p class="cfm-lead">Busca por nombre o RUT entre más de <strong>10.000 multas registradas de 3.800 comunidades chilenas</strong> y revisa el detalle de cada una en segundos.</p>'+
     '</div>'+
     '<div class="cfm-form">'+
       '<div class="cfm-card">'+
         '<h3>Accede gratis al buscador</h3>'+
-        '<p class="cfm-sub">Completa tus datos y revisa de inmediato las multas de tu comunidad.</p>'+
+        '<p class="cfm-sub">Completa tus datos y revisa al instante las multas de tu comunidad. ¿No sabes el RUT? No importa: también puedes buscar por nombre.</p>'+
         '<div id="hs-multas-form"><div class="cfm-loading">Cargando formulario…</div></div>'+
-        '<p class="cfm-note">Usamos tus datos solo para darte acceso al buscador.</p>'+
+        '<p class="cfm-note">Tus datos están seguros: cero spam y puedes darte de baja cuando quieras.</p>'+
       '</div>'+
     '</div>'+
     '<div class="cfm-bottom">'+
@@ -88,8 +88,8 @@
   '<div class="cfm-steps-wrap">'+
     '<h2>¿Cómo funciona?</h2>'+
     '<div class="cfm-steps-grid">'+
-      '<div class="cfm-step"><div class="num">1</div><h4>Deja tus datos</h4><p>Completa el formulario con tu nombre, correo y el RUT de tu comunidad.</p></div>'+
-      '<div class="cfm-step"><div class="num">2</div><h4>Busca tu comunidad</h4><p>Entras directo al buscador, con tu comunidad ya precargada.</p></div>'+
+      '<div class="cfm-step"><div class="num">1</div><h4>Deja tus datos</h4><p>Completa el formulario con tu nombre, correo y, si lo tienes, el RUT de tu comunidad.</p></div>'+
+      '<div class="cfm-step"><div class="num">2</div><h4>Busca tu comunidad</h4><p>Entras directo al buscador; si dejaste el RUT, tu comunidad aparece al tiro.</p></div>'+
       '<div class="cfm-step"><div class="num">3</div><h4>Revisa cada multa</h4><p>Monto, fecha, estado de pago y el motivo de cada infracción laboral.</p></div>'+
     '</div>'+
   '</div>';
@@ -128,10 +128,12 @@
           "body *{font-family:'Montserrat',Arial,sans-serif !important;}"+
           ".hs-form-field{margin-bottom:13px;}"+
           ".hs-form-field>label{font-size:.78rem;font-weight:600;color:#33404f;margin-bottom:4px;display:block;}"+
-          "input.hs-input:not([type=checkbox]):not([type=radio]),select.hs-input,textarea.hs-input{width:100% !important;padding:11px 12px;border:1px solid #D8DCE6;border-radius:8px;font-size:.93rem;background:#fff;color:#1c2430;}"+
+          /* 16px minimo: evita el zoom automatico de iOS Safari al enfocar campos */
+          "input.hs-input:not([type=checkbox]):not([type=radio]),select.hs-input,textarea.hs-input{width:100% !important;padding:11px 12px;border:1px solid #D8DCE6;border-radius:8px;font-size:16px;background:#fff;color:#1c2430;}"+
           "input.hs-input:focus,select.hs-input:focus{outline:none;border-color:#3B2AB1;box-shadow:0 0 0 3px rgba(59,42,177,.13);}"+
-          ".hs-button{width:100%;background:#3B2AB1 !important;color:#fff !important;border:0;border-radius:10px;padding:14px;font-size:.98rem;font-weight:700;cursor:pointer;}"+
-          ".hs-button:hover{background:#2A1D8F !important;}"+
+          /* CTA: HubSpot fuerza su naranjo (#FF7A59) por un canal no interceptable; lo conservamos
+             a proposito (contraste complementario sobre card blanca en pagina indigo). Solo pulimos forma. */
+          ".hs-button{width:100%;border:0;border-radius:10px;padding:14px;font-size:.98rem;font-weight:700;cursor:pointer;}"+
           ".hs-error-msg,.hs-error-msgs label{color:#C0392B;font-size:.73rem;}"+
           ".legal-consent-container,.legal-consent-container p,.legal-consent-container label{font-size:.72rem !important;color:#7A8694;line-height:1.4;}";
         (d.head||d.documentElement).appendChild(s);
@@ -142,6 +144,18 @@
         if(b.tagName==='INPUT'){ b.value='Ver las multas de mi comunidad'; }
         else{ b.textContent='Ver las multas de mi comunidad'; }
       }
+    }catch(_){}
+  }
+
+  /* HubSpot a veces deja el iframe en ~150px: sincronizar la altura con el contenido */
+  function syncIframeHeight(){
+    var f=document.querySelector('#hs-multas-form iframe');
+    if(!f) return;
+    try{
+      var d=f.contentDocument||f.contentWindow.document;
+      if(!d || !d.body) return;
+      var h=d.body.scrollHeight;
+      if(h>220 && Math.abs(f.offsetHeight-h)>8){ f.style.height=h+'px'; f.style.minHeight=h+'px'; }
     }catch(_){}
   }
 
@@ -163,6 +177,7 @@
         setTimeout(styleIframe, 120);
         setTimeout(styleIframe, 700);
         setTimeout(styleIframe, 2000);
+        setInterval(syncIframeHeight, 700); // barato; cubre expansion por errores de validacion
       },
       onFormSubmit: function($form){
         try{ var el=$form.find('input[name="n__de_rut"]'); window.__cfmQ=(el && el.val)?el.val():''; }catch(_){ window.__cfmQ=''; }

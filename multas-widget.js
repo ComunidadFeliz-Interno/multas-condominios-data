@@ -134,7 +134,8 @@
       if(loading)return; loading=true;
       out.innerHTML='<div class="cfm-status">Cargando base de multas…</div>';
       fetch(DATA_URL).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-      .then(function(j){DATA=j;INDEX=j.items.map(function(it){return {it:it,sn:norm(it.nombre),sr:normRut(it.rut)};});loading=false;cb();})
+      /* al resolver, re-entrar por render() (no cb): re-lee el input y evita pintar una busqueda obsoleta */
+      .then(function(j){DATA=j;INDEX=j.items.map(function(it){return {it:it,sn:norm(it.nombre),sr:normRut(it.rut)};});loading=false;render();})
       .catch(function(e){loading=false;out.innerHTML='<div class="cfm-empty"><b>No pudimos cargar la información.</b><br>Intenta nuevamente en unos segundos.</div>';console.error('cf-multas:',e);});
     }
     function search(q){
@@ -153,7 +154,16 @@
     }
     function paint(){
       var res=lastResults;
-      if(!res.length){out.innerHTML='<div class="cfm-empty"><b>No encontramos multas</b> para “'+esc(input.value.trim())+'”.<br>Prueba con otra parte del nombre o revisa el RUT.<br><br><b style="color:#127a3e">Buena noticia:</b> si tu comunidad no aparece, no registra multas en esta base.</div>';return;}
+      if(!res.length){
+        var q=input.value.trim();
+        var esRut = normRut(q).length>=7 && /[0-9]/.test(q); // busqueda tipo RUT: si es exacta y no hay match, si es buena noticia
+        if(esRut){
+          out.innerHTML='<div class="cfm-empty"><b>Sin multas registradas para este RUT</b> en esta base. <b style="color:#127a3e">Buena noticia para tu comunidad.</b><br><br>Si quieres, verifica también por nombre, por si la razón social es distinta.</div>';
+        }else{
+          out.innerHTML='<div class="cfm-empty"><b>No encontramos resultados</b> para “'+esc(q)+'”.<br>Prueba con otra palabra del nombre, o busca por RUT: es la forma más precisa de confirmar.</div>';
+        }
+        return;
+      }
       var html='<div class="cfm-count">'+res.length+' resultado'+(res.length>1?'s':'')+'</div>';
       res.slice(0,shown).forEach(function(it,idx){html+=card(it,idx);});
       if(res.length>shown){html+='<div class="cfm-more"><button type="button" data-more="1">Ver más resultados ('+(res.length-shown)+')</button></div>';}
