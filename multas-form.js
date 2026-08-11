@@ -5,19 +5,21 @@
 (function(){
   var CSS = ''+
   "@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');"+
-  /* Montserrat en toda la sección de la herramienta */
-  ".div-block-967,.div-block-967 *{font-family:'Montserrat',Arial,sans-serif !important;}"+
-  /* Subir el form: compactar paddings del hero y del bloque del form */
-  ".div-block-967{padding-top:22px !important;padding-bottom:26px !important;}"+
+  /* Montserrat en el hero y la sección del form */
+  ".div-block-961,.div-block-961 *,.div-block-967,.div-block-967 *{font-family:'Montserrat',Arial,sans-serif !important;}"+
+  /* Hero compacto para subir el form sobre el fold */
+  ".div-block-961{min-height:auto !important;padding-top:120px !important;padding-bottom:24px !important;}"+
+  ".heading-324{line-height:1.12 !important;margin-bottom:10px !important;}"+
+  ".div-block-967{padding-top:14px !important;padding-bottom:20px !important;}"+
   ".div-block-970{padding-top:4px !important;padding-bottom:8px !important;}"+
-  ".div-block-967 h1{margin-bottom:10px !important;line-height:1.15 !important;}"+
   /* Contenedor del form: centrado y ancho cómodo */
   "#hs-multas-form{max-width:560px;margin:0 auto;}"+
   "#hs-multas-form iframe{width:100% !important;}"+
   "@media(max-width:767px){"+
-    ".div-block-967{padding-top:14px !important;padding-bottom:18px !important;}"+
-    ".div-block-968{padding-left:16px !important;padding-right:16px !important;}"+
-    ".div-block-967 h1{font-size:1.6rem !important;}"+
+    ".div-block-961{padding-top:92px !important;padding-bottom:14px !important;}"+
+    ".heading-324{font-size:1.5rem !important;}"+
+    ".div-block-967{padding-top:8px !important;padding-bottom:14px !important;}"+
+    ".div-block-968{padding-left:14px !important;padding-right:14px !important;}"+
   "}";
 
   function injectCSS(){
