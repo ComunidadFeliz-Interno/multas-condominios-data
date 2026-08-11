@@ -6,7 +6,14 @@
   var PAGE = 15, DETAIL_PAGE = 25;
 
   var CSS = ''+
-  '#cf-multas{--acc:#0d6d63;--acc-d:#0a544c;--ink:#1c2430;--mut:#5c6b7a;--line:#e3e8ee;--bg:#fff;--soft:#f5f8f7;--pag:#127a3e;--pag-bg:#e6f4ea;--tram:#b4531a;--tram-bg:#fbeee1;max-width:920px;margin:0 auto;padding:8px 16px 48px;color:var(--ink);font-family:inherit;-webkit-font-smoothing:antialiased;}'+
+  "@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');"+
+  /* Montserrat en la seccion + subir el buscador sobre el fold */
+  ".div-block-967,.div-block-967 *{font-family:'Montserrat',Arial,sans-serif !important;}"+
+  ".div-block-967{padding-top:22px !important;padding-bottom:26px !important;}"+
+  ".div-block-970{padding-top:4px !important;padding-bottom:8px !important;}"+
+  ".div-block-967 h1{margin-bottom:10px !important;line-height:1.15 !important;}"+
+  "@media(max-width:767px){.div-block-967{padding-top:14px !important;padding-bottom:18px !important;}.div-block-968{padding-left:12px !important;padding-right:12px !important;}.div-block-967 h1{font-size:1.6rem !important;}}"+
+  "#cf-multas{--acc:#0d6d63;--acc-d:#0a544c;--ink:#1c2430;--mut:#5c6b7a;--line:#e3e8ee;--bg:#fff;--soft:#f5f8f7;--pag:#127a3e;--pag-bg:#e6f4ea;--tram:#b4531a;--tram-bg:#fbeee1;max-width:920px;margin:0 auto;padding:8px 6px 48px;color:var(--ink);font-family:'Montserrat',Arial,sans-serif;-webkit-font-smoothing:antialiased;}"+
   '#cf-multas *{box-sizing:border-box;}'+
   '#cf-multas .cfm-head{text-align:center;margin:8px 0 22px;}'+
   '#cf-multas .cfm-head h2{font-size:1.5rem;line-height:1.2;margin:0 0 6px;font-weight:800;}'+
@@ -47,7 +54,23 @@
   '#cf-multas .cfm-empty{text-align:center;padding:34px 16px;color:var(--mut);}'+
   '#cf-multas .cfm-empty b{color:var(--ink);}'+
   '#cf-multas .cfm-disc{margin:26px 2px 0;font-size:.76rem;color:#9aa7b4;line-height:1.5;text-align:center;}'+
-  '@media(max-width:600px){#cf-multas .cfm-searchbar{flex-direction:column;}#cf-multas .cfm-searchbar button{padding:12px;}#cf-multas .cfm-metric b{font-size:1.25rem;}}';
+  '@media(max-width:600px){'+
+    '#cf-multas .cfm-searchbar{flex-direction:column;}'+
+    '#cf-multas .cfm-searchbar button{padding:12px;}'+
+    '#cf-multas .cfm-searchbar input{font-size:16px;}'+
+    '#cf-multas .cfm-cardhead{padding:14px;gap:10px;}'+
+    '#cf-multas .cfm-metric b{font-size:1.3rem;}'+
+    /* tabla -> tarjetas apiladas */
+    '#cf-multas table{min-width:0;}'+
+    '#cf-multas thead{display:none;}'+
+    '#cf-multas table,#cf-multas tbody,#cf-multas tr,#cf-multas td{display:block;width:100%;}'+
+    '#cf-multas tbody tr{border:1px solid var(--line);border-radius:10px;margin:10px 12px;background:var(--bg);}'+
+    '#cf-multas tbody td{border:0;border-bottom:1px solid var(--line);padding:9px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:14px;text-align:right;}'+
+    '#cf-multas tbody tr td:last-child{border-bottom:0;}'+
+    '#cf-multas tbody td::before{content:attr(data-label);font-weight:700;color:var(--mut);font-size:.66rem;text-transform:uppercase;letter-spacing:.03em;flex:none;text-align:left;}'+
+    '#cf-multas .cfm-en{flex-direction:column;align-items:flex-start;text-align:left;max-width:none;}'+
+    '#cf-multas .cfm-en::before{margin-bottom:3px;}'+
+  '}';
 
   var MARKUP = ''+
   '<div class="cfm-head">'+
@@ -132,7 +155,7 @@
     function detail(it,lim){
       var rows=it.multas.slice(0,lim).map(function(m){
         var stt=m.e==='PAGADA'?'pag':'tram';
-        return '<tr><td>'+esc(m.f)+'</td><td><span class="cfm-st '+stt+'">'+esc(m.e)+'</span></td><td class="cfm-mo">'+esc(m.mo)+' '+esc(m.t)+'</td><td>'+esc(m.p)+'</td><td class="cfm-en">'+esc(m.en)+'</td></tr>';
+        return '<tr><td data-label="Fecha">'+esc(m.f)+'</td><td data-label="Estado"><span class="cfm-st '+stt+'">'+esc(m.e)+'</span></td><td class="cfm-mo" data-label="Monto">'+esc(m.mo)+' '+esc(m.t)+'</td><td data-label="Procedencia">'+esc(m.p)+'</td><td class="cfm-en" data-label="Infracción">'+esc(m.en)+'</td></tr>';
       }).join('');
       var extra=it.multas.length>lim?'<div class="cfm-more"><button type="button" data-detailmore="1">Ver las '+(it.multas.length-lim)+' multas restantes</button></div>':'';
       return '<div class="cfm-tablewrap"><table><thead><tr><th>Fecha</th><th>Estado</th><th>Monto</th><th>Procedencia</th><th>Infracción</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+extra;
