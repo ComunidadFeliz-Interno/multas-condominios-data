@@ -9,11 +9,14 @@
   "@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');"+
   /* Montserrat en hero + seccion; hero compacto para subir el buscador sobre el fold */
   ".div-block-961,.div-block-961 *,.div-block-967,.div-block-967 *{font-family:'Montserrat',Arial,sans-serif !important;}"+
-  ".div-block-961{min-height:auto !important;padding-top:120px !important;padding-bottom:24px !important;}"+
+  ".div-block-963{margin-top:0 !important;}"+
+  ".div-block-961{min-height:auto !important;padding-top:140px !important;padding-bottom:24px !important;}"+
   ".heading-324{line-height:1.12 !important;margin-bottom:10px !important;}"+
   ".div-block-967{padding-top:14px !important;padding-bottom:20px !important;}"+
   ".div-block-970{padding-top:4px !important;padding-bottom:8px !important;}"+
-  "@media(max-width:767px){.div-block-961{padding-top:92px !important;padding-bottom:14px !important;}.heading-324{font-size:1.5rem !important;}.div-block-967{padding-top:8px !important;padding-bottom:14px !important;}.div-block-968{padding-left:12px !important;padding-right:12px !important;}}"+
+  /* Ocultar el encabezado morado redundante ("Cotizador…"): el buscador ya trae su propio título */
+  ".div-block-969{display:none !important;}"+
+  "@media(max-width:767px){.div-block-961{padding-top:108px !important;padding-bottom:14px !important;}.heading-324{font-size:1.5rem !important;}.div-block-967{padding-top:8px !important;padding-bottom:14px !important;}.div-block-968{padding-left:12px !important;padding-right:12px !important;}}"+
   "#cf-multas{--acc:#0d6d63;--acc-d:#0a544c;--ink:#1c2430;--mut:#5c6b7a;--line:#e3e8ee;--bg:#fff;--soft:#f5f8f7;--pag:#127a3e;--pag-bg:#e6f4ea;--tram:#b4531a;--tram-bg:#fbeee1;max-width:920px;margin:0 auto;padding:8px 6px 48px;color:var(--ink);font-family:'Montserrat',Arial,sans-serif;-webkit-font-smoothing:antialiased;}"+
   '#cf-multas *{box-sizing:border-box;}'+
   '#cf-multas .cfm-head{text-align:center;margin:8px 0 22px;}'+
@@ -97,7 +100,19 @@
     return true;
   }
 
+  function fixCopy(){
+    var repl=[['Encuentra al próximo administrador para tu condominio o edificio',
+               'Consulta gratis las multas registradas ante la Dirección del Trabajo.']];
+    try{
+      var w=document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, nodes=[];
+      while((n=w.nextNode())) nodes.push(n);
+      nodes.forEach(function(node){var t=node.nodeValue; if(!t) return; var tt=t.trim();
+        for(var i=0;i<repl.length;i++){ if(tt===repl[i][0]){ node.nodeValue=t.replace(repl[i][0],repl[i][1]); } }});
+    }catch(_){}
+  }
+
   function boot(){
+    fixCopy();
     if(!mount()) return;
     var out = document.getElementById('cfm-out');
     var input = document.getElementById('cfm-q');
