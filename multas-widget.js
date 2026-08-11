@@ -60,6 +60,11 @@
   '#cf-multas .cfm-empty{text-align:center;padding:34px 16px;color:var(--mut);}'+
   '#cf-multas .cfm-empty b{color:var(--ink);}'+
   '#cf-multas .cfm-disc{margin:26px 2px 0;font-size:.74rem;color:#9aa7b4;line-height:1.5;text-align:center;}'+
+  '#cf-multas .cfm-again{text-align:center;margin:26px 0 0;}'+
+  '#cf-multas .cfm-btn-ghost{display:inline-block;text-decoration:none;background:#fff;border:1px solid var(--acc);color:var(--acc);font-weight:700;font-size:.92rem;padding:12px 22px;border-radius:10px;transition:background .15s,color .15s;font-family:inherit;}'+
+  '#cf-multas .cfm-btn-ghost:hover{background:var(--acc);color:#fff;}'+
+  '#cf-multas .cfm-btn{display:inline-block;text-decoration:none;background:var(--acc);color:#fff !important;font-weight:700;font-size:.95rem;padding:12px 24px;border-radius:10px;font-family:inherit;}'+
+  '#cf-multas .cfm-btn:hover{background:var(--acc-d);}'+
   '@media(max-width:600px){'+
     '#cf-multas .cfm-searchbar{flex-direction:column;}'+
     '#cf-multas .cfm-searchbar button{padding:12px;}'+
@@ -78,17 +83,15 @@
     '#cf-multas .cfm-en::before{margin-bottom:3px;}'+
   '}';
 
+  var BACK_URL = "/multas-dt"; // pagina anterior (muro con el buscador)
+
   var HERO = ''+
   '<h1>Multas de tu condominio</h1>'+
-  '<p>Busca por el <strong>nombre</strong> o <strong>RUT</strong> de tu comunidad y revisa cada multa registrada ante la Dirección del Trabajo.</p>';
+  '<p>Estas son las multas registradas ante la Dirección del Trabajo para la comunidad que consultaste.</p>';
 
   var MARKUP = ''+
-  '<div class="cfm-searchbar">'+
-    '<input id="cfm-q" type="text" autocomplete="off" spellcheck="false" placeholder="Ej: Comunidad Edificio Los Aromos  ·  76.123.456-7">'+
-    '<button id="cfm-btn" type="button">Buscar</button>'+
-  '</div>'+
-  '<div class="cfm-hint">Puedes buscar por parte del nombre o por RUT (con o sin puntos y guion).</div>'+
   '<div id="cfm-out" aria-live="polite"></div>'+
+  '<div class="cfm-again"><a class="cfm-btn-ghost" href="'+BACK_URL+'">← Buscar otra comunidad</a></div>'+
   '<p class="cfm-disc">Información basada en registros públicos de multas de la Dirección del Trabajo. La clasificación como comunidad/condominio es referencial. Si detectas un error, contáctanos.</p>';
 
   function injectCSS(){
@@ -119,9 +122,11 @@
     injectCSS(); buildHero();
     if(!mount()) return;
     var out=document.getElementById('cfm-out');
-    var input=document.getElementById('cfm-q');
-    var btn=document.getElementById('cfm-btn');
-    if(!out || !input || !btn) return;
+    if(!out) return;
+
+    // La comunidad viene fija en la URL (?q= / ?rut=). No hay buscador en esta página.
+    var QUERY='';
+    try{var p=new URLSearchParams(location.search);QUERY=(p.get('rut')||p.get('q')||'').trim();}catch(_){}
 
     var DATA=null, INDEX=null, loading=false, shown=PAGE, lastResults=[];
 
@@ -148,14 +153,12 @@
       res.sort(function(a,b){return b.n-a.n;});return res;
     }
     function render(){
-      var q=input.value.trim();
-      if(q.length<3){out.innerHTML='<div class="cfm-status">Escribe al menos 3 caracteres para buscar.</div>';return;}
-      loadData(function(){lastResults=search(q);shown=PAGE;paint();});
+      loadData(function(){lastResults=search(QUERY);shown=PAGE;paint();});
     }
     function paint(){
       var res=lastResults;
       if(!res.length){
-        var q=input.value.trim();
+        var q=QUERY;
         var esRut = normRut(q).length>=7 && /[0-9]/.test(q); // busqueda tipo RUT: si es exacta y no hay match, si es buena noticia
         if(esRut){
           out.innerHTML='<div class="cfm-empty"><b>Sin multas registradas para este RUT</b> en esta base. <b style="color:#127a3e">Buena noticia para tu comunidad.</b><br><br>Si quieres, verifica también por nombre, por si la razón social es distinta.</div>';
@@ -196,10 +199,12 @@
       var head=e.target.closest('[data-toggle]'); if(head){head.parentNode.classList.toggle('open');return;}
       var dm=e.target.closest('[data-detailmore]'); if(dm){var c=dm.closest('.cfm-card');var it=lastResults[+c.getAttribute('data-i')];c.querySelector('[data-detail]').innerHTML=detail(it,9999);return;}
     });
-    btn.addEventListener('click',render);
-    var t; input.addEventListener('input',function(){clearTimeout(t);t=setTimeout(render,220);});
-    input.addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(t);render();}});
-    try{var p=new URLSearchParams(location.search);var pre=p.get('rut')||p.get('q');if(pre){input.value=pre;render();}}catch(_){}
+    if(QUERY){
+      out.innerHTML='<div class="cfm-status">Cargando…</div>';
+      render();
+    }else{
+      out.innerHTML='<div class="cfm-empty"><b>¿Qué comunidad quieres revisar?</b><br>Vuelve al buscador e ingresa el nombre o RUT de tu comunidad.<br><br><a class="cfm-btn" href="'+BACK_URL+'">Ir al buscador</a></div>';
+    }
   }
 
   injectCSS(); // lo antes posible para minimizar el flash del hero viejo
